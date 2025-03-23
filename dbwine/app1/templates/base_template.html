@@ -1,0 +1,47 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template com Fundo</title>
+    <style>
+        body {
+            background-image: url("{% static 'back_ground.png' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .box {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <h2>Adicionar Avaliação</h2>
+            <!-- Conteúdo para Adicionar Avaliação -->
+        </div>
+        <div class="box">
+            <h2>Modelos de Classificação</h2>
+            <!-- Conteúdo para Modelos de Classificação -->
+        </div>
+    </div>
+</body>
+</html>

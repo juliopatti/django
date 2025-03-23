@@ -13,3 +13,6 @@ pip install -r requirements.txt
 DJANGO_SECRET_KEY=sua_senha
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=['*']
+
+
+
