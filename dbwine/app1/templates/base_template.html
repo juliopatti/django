@@ -30,6 +30,23 @@
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .admin-box {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .admin-box a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .admin-box a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -41,6 +58,14 @@
         <div class="box">
             <h2>Modelos de Classificação</h2>
             <!-- Conteúdo para Modelos de Classificação -->
+        </div>
+        <div class="admin-box">
+            <h2>Espaço do Admin</h2>
+            <!-- Links para operações CRUD -->
+            <a href="{% url 'criar_wine' %}">Criar Wine</a><br>
+            <a href="{% url 'buscar_wines' %}">Buscar Wines</a><br>
+            <a href="{% url 'atualizar_wine' wine_id=1 %}">Atualizar Wine</a><br>
+            <a href="{% url 'deletar_wine' wine_id=1 %}">Deletar Wine</a>
         </div>
     </div>
 </body>

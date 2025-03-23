@@ -1,0 +1,121 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Wines</title>
+    <style>
+        body {
+            background-image: url("{% static 'back_ground.png' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.4); /* Maior transparência */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Leve sombra elegante */
+            width: 80%;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #555;
+        }
+        .search-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .search-box button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-box button:hover {
+            background-color: #0056b3;
+        }
+        .result-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente preto */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            color: white; /* Texto branco para contraste */
+        }
+        .wine-field {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .wine-field span {
+            font-weight: bold;
+            color: #ffcc00; /* Destaque em amarelo */
+        }
+        .no-result {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Buscar Wines</h1>
+        <!-- Caixa de Busca -->
+        <form method="GET" action="{% url 'buscar_wines' %}" class="search-box">
+            <input type="text" name="search_query" placeholder="Buscar por nome ou ID">
+            <button type="submit">Buscar</button>
+        </form>
+        <!-- Resultado da Busca -->
+        {% if wines %}
+            {% for wine in wines %}
+                <div class="result-container">
+                    <!-- Nome -->
+                    <div class="wine-field"><span>Nome:</span> {{ wine.name }}</div>
+                    <!-- ID -->
+                    <div class="wine-field"><span>ID:</span> {{ wine.id }}</div>
+                    <!-- Qualidade -->
+                    <div class="wine-field"><span>Qualidade:</span> {{ wine.quality }}</div>
+                    <!-- Bin Qualidade -->
+                    <div class="wine-field"><span>Qualidade Binária:</span> {{ wine.bin_quality }}</div>
+                    <!-- Teor Alcoólico -->
+                    <div class="wine-field"><span>Teor Alcoólico:</span> {{ wine.alcohol }}</div>
+                    <!-- Demais Informações -->
+                    <div class="wine-field"><span>Acidez Fixa:</span> {{ wine.fixed_acidity }}</div>
+                    <div class="wine-field"><span>Acidez Volátil:</span> {{ wine.volatile_acidity }}</div>
+                    <div class="wine-field"><span>Ácido Cítrico:</span> {{ wine.citric_acid }}</div>
+                    <div class="wine-field"><span>Açúcar Residual:</span> {{ wine.residual_sugar }}</div>
+                    <div class="wine-field"><span>Cloretos:</span> {{ wine.chlorides }}</div>
+                    <div class="wine-field"><span>SO2 Livre:</span> {{ wine.free_sulfur_dioxide }}</div>
+                    <div class="wine-field"><span>SO2 Total:</span> {{ wine.total_sulfur_dioxide }}</div>
+                    <div class="wine-field"><span>Densidade:</span> {{ wine.density }}</div>
+                    <div class="wine-field"><span>pH:</span> {{ wine.pH }}</div>
+                    <div class="wine-field"><span>Sulfatos:</span> {{ wine.sulphates }}</div>
+                    <div class="wine-field"><span>Treinamento:</span> {{ wine.train_set }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-result">Nenhum vinho encontrado para a busca.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
