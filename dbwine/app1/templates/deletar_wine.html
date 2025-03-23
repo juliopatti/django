@@ -1,0 +1,110 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deletar Wine</title>
+    <style>
+        body {
+            background-image: url("{% static 'back_ground.png' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 400px;
+        }
+        .container h1 {
+            color: #555;
+        }
+        .container form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .container input, .container button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .container button {
+            background-color: #e63946;
+            color: white;
+            cursor: pointer;
+        }
+        .container button:hover {
+            background-color: #b62d38;
+        }
+        .wine-info {
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .wine-info p span {
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deletar Wine</h1>
+
+        <!-- Mensagem de erro, se houver -->
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if not wine %}
+        <!-- Caixa de busca -->
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="search_query" placeholder="Digite o ID ou Nome do Vinho" required>
+            <button type="submit">Buscar Vinho</button>
+        </form>
+        {% else %}
+        <!-- Confirmação de exclusão -->
+        <div class="wine-info">
+            <p><span>Nome:</span> {{ wine.name }}</p>
+            <p><span>ID:</span> {{ wine.id }}</p>
+            <p><span>Acidez Fixa:</span> {{ wine.fixed_acidity }}</p>
+            <p><span>Acidez Volátil:</span> {{ wine.volatile_acidity }}</p>
+            <p><span>Ácido Cítrico:</span> {{ wine.citric_acid }}</p>
+            <p><span>Açúcar Residual:</span> {{ wine.residual_sugar }}</p>
+            <p><span>Cloretos:</span> {{ wine.chlorides }}</p>
+            <p><span>Teor Alcoólico:</span> {{ wine.alcohol }}</p>
+            <p><span>Qualidade:</span> {{ wine.quality }}</p>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="wine_id" value="{{ wine.id }}">
+            <button type="submit" name="confirm_delete">Confirmar Exclusão</button>
+        </form>
+        <a href="{% url 'home' %}" style="text-decoration: none; color: #007BFF;">Cancelar</a>
+        {% endif %}
+    </div>
+</body>
+</html>

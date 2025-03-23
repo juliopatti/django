@@ -1,0 +1,171 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Wine</title>
+    <style>
+        body {
+            background-image: url("{% static 'back_ground.png' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 600px;
+        }
+        .form-container h1 {
+            text-align: center;
+            color: #555;
+        }
+        .form-container form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Espaçamento entre os campos */
+        }
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 calc(50% - 20px); /* Cada campo ocupa metade da largura */
+        }
+        .form-field label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-field input, .form-field select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-container button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Atualizar Wine</h1>
+
+        <!-- Exibição da Mensagem de Erro -->
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if not wine %}
+        <!-- Formulário de busca -->
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="search_query" placeholder="Digite o ID ou Nome do Vinho" required>
+            <button type="submit">Buscar Vinho</button>
+        </form>
+        {% else %}
+        <!-- Formulário para edição -->
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="wine_id" value="{{ wine.id }}">
+
+            <!-- Primeira Coluna -->
+            <div class="form-field">
+                <label>Nome:</label>
+                <input type="text" name="name" value="{{ wine.name }}">
+            </div>
+            <div class="form-field">
+                <label>Acidez Fixa:</label>
+                <input type="number" step="0.001" name="fixed_acidity" value="{{ wine.fixed_acidity }}">
+            </div>
+            <div class="form-field">
+                <label>Acidez Volátil:</label>
+                <input type="number" step="0.001" name="volatile_acidity" value="{{ wine.volatile_acidity }}">
+            </div>
+            <div class="form-field">
+                <label>Ácido Cítrico:</label>
+                <input type="number" step="0.001" name="citric_acid" value="{{ wine.citric_acid }}">
+            </div>
+            <div class="form-field">
+                <label>Açúcar Residual:</label>
+                <input type="number" step="0.001" name="residual_sugar" value="{{ wine.residual_sugar }}">
+            </div>
+            <div class="form-field">
+                <label>Cloretos:</label>
+                <input type="number" step="0.001" name="chlorides" value="{{ wine.chlorides }}">
+            </div>
+            <div class="form-field">
+                <label>SO2 Livre:</label>
+                <input type="number" step="0.001" name="free_sulfur_dioxide" value="{{ wine.free_sulfur_dioxide }}">
+            </div>
+
+            <!-- Segunda Coluna -->
+            <div class="form-field">
+                <label>SO2 Total:</label>
+                <input type="number" step="0.001" name="total_sulfur_dioxide" value="{{ wine.total_sulfur_dioxide }}">
+            </div>
+            <div class="form-field">
+                <label>Densidade:</label>
+                <input type="number" step="0.001" name="density" value="{{ wine.density }}">
+            </div>
+            <div class="form-field">
+                <label>pH:</label>
+                <input type="number" step="0.001" name="pH" value="{{ wine.pH }}">
+            </div>
+            <div class="form-field">
+                <label>Sulfatos:</label>
+                <input type="number" step="0.001" name="sulphates" value="{{ wine.sulphates }}">
+            </div>
+            <div class="form-field">
+                <label>Teor Alcoólico:</label>
+                <input type="number" step="0.001" name="alcohol" value="{{ wine.alcohol }}">
+            </div>
+            <div class="form-field">
+                <label>Qualidade:</label>
+                <input type="number" name="quality" value="{{ wine.quality }}">
+            </div>
+            <div class="form-field">
+                <label>Qualidade Binária:</label>
+                <select name="bin_quality">
+                    <option value="1" {% if wine.bin_quality == '1' %}selected{% endif %}>Bom</option>
+                    <option value="0" {% if wine.bin_quality == '0' %}selected{% endif %}>Ruim</option>
+                </select>
+            </div>
+            <div class="form-field" style="flex: 1 1 100%;">
+                <label>Treinamento:</label>
+                <select name="train_set">
+                    <option value="True" {% if wine.train_set == 'True' %}selected{% endif %}>Sim</option>
+                    <option value="False" {% if wine.train_set == 'False' %}selected{% endif %}>Não</option>
+                </select>
+            </div>
+            <button type="submit" name="update_wine">Atualizar Vinho</button>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>
+
+
