@@ -39,12 +39,12 @@
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .admin-box a {
-            color: #ffcc00;
+        .admin-box a, .box a {
+            color: #007BFF;
             text-decoration: none;
             font-weight: bold;
         }
-        .admin-box a:hover {
+        .admin-box a:hover, .box a:hover {
             text-decoration: underline;
         }
     </style>
@@ -57,7 +57,8 @@
         </div>
         <div class="box">
             <h2>Modelos de Classificação</h2>
-            <!-- Conteúdo para Modelos de Classificação -->
+            <a href="{% url 'escolher_modelo' %}">Treinar um Novo Modelo</a><br>
+            <a href="{% url 'informacoes_modelos' %}">Informações dos Modelos Treinados</a>
         </div>
         <div class="admin-box">
             <h2>Espaço do Admin</h2>

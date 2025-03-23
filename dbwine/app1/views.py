@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Wines
+import os
+import json
+
 
 # def index(request):
 #     return HttpResponse("APP1.")
@@ -124,3 +127,31 @@ def deletar_wine(request):
             return redirect('home')
 
     return render(request, 'deletar_wine.html', {'wine': wine})
+
+
+def treinar_modelo(request, tipo):
+    # Substitua pelo código para tratar o treinamento baseado no tipo escolhido
+    return render(request, 'treinar_modelo.html', {'tipo': tipo})
+
+def informacoes_modelos(request):
+    return render(request, 'informacoes_modelos.html')
+
+def escolher_modelo(request):
+    # Caminho do arquivo JSON
+    json_path = os.path.join(os.path.dirname(__file__), 'sampling_types.json')
+
+    # Carrega os dados do arquivo JSON
+    with open(json_path, 'r', encoding='utf-8') as file:
+        sampling_types = json.load(file)
+
+    # Ordena os modelos: "padrao" em primeiro lugar, seguido dos demais em ordem alfabética
+    modelos = [{"tipo": "padrao", "nome": sampling_types["padrao"]["name"]}]
+    modelos += sorted(
+        [{"tipo": key, "nome": value["name"], "info": value} for key, value in sampling_types.items() if key != "padrao"],
+        key=lambda x: x["nome"]
+    )
+
+    # Renderiza o template, passando todos os modelos e informações
+    return render(request, 'escolher_modelo.html', {'modelos': modelos, 'sampling_data': sampling_types})
+
+

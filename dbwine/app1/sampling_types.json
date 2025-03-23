@@ -1,0 +1,255 @@
+{
+
+    "padrao": {"name": "Treinamento sem sampleamento."},
+    "cnn": {
+      "name": "Condensed Nearest Neighbour",
+      "purpose": "Reduzir amostras redundantes, preservando representatividade.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "n_neighbors": "Número de vizinhos a considerar"
+      }
+    },
+    "tomeklinks_auto": {
+      "name": "Tomek Links",
+      "purpose": "Remoção de pares redundantes entre classes diferentes.",
+      "parameters": {
+        "sampling_strategy": "auto"
+      }
+    },
+    "oss": {
+      "name": "One-Sided Selection",
+      "purpose": "Remover amostras redundantes e ruídos com base em vizinhos próximos.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "n_neighbors": "Número de vizinhos a considerar"
+      }
+    },
+    "enn": {
+      "name": "Edited Nearest Neighbours",
+      "purpose": "Remover amostras consideradas classificadas incorretamente.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "n_neighbors": "Número de vizinhos usados para edição",
+        "kind_sel": "Critério de seleção para edição"
+      }
+    },
+    "renn": {
+      "name": "Repeated Edited Nearest Neighbours",
+      "purpose": "Refinamento de remoção por edição repetida.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "n_neighbors": "Número de vizinhos usados para edição",
+        "kind_sel": "Critério de seleção para edição",
+        "max_iter": "Máximo de iterações para edição"
+      }
+    },
+    "allknn": {
+      "name": "All KNN",
+      "purpose": "Refinamento de remoção baseado em vizinhos.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "n_neighbors": "Número de vizinhos a considerar",
+        "kind_sel": "Critério para remoção"
+      }
+    },
+    "ncr": {
+      "name": "Neighbourhood Cleaning Rule",
+      "purpose": "Remoção com base em regras de limpeza usando vizinhança.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "n_neighbors": "Número de vizinhos a considerar",
+        "threshold_cleaning": "Limite para limpeza"
+      }
+    },
+    "nm1": {
+      "name": "NearMiss versão 1",
+      "purpose": "Reduzir dados usando algoritmo específico de vizinhança.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "version": 1,
+        "n_neighbors": "Número de vizinhos"
+      }
+    },
+    "nm2": {
+      "name": "NearMiss versão 2",
+      "purpose": "Similar ao NM1 com critérios diferentes para redução.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "version": 2,
+        "n_neighbors": "Número de vizinhos"
+      }
+    },
+    "nm3": {
+      "name": "NearMiss versão 3",
+      "purpose": "Outro critério de redução baseado em vizinhança.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "version": 3,
+        "n_neighbors": "Número de vizinhos"
+      }
+    },
+    "iht_none": {
+      "name": "Instance Hardness Threshold (Sem Estimador)",
+      "purpose": "Selecionar amostras usando limiar de dificuldade.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "cv": 4
+      }
+    },
+    "iht_lgbm": {
+      "name": "Instance Hardness Threshold (Com LightGBM)",
+      "purpose": "Selecionar amostras com base em dificuldade e estimador LightGBM.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "cv": 4,
+        "estimator": "LGBMClassifier com pesos balanceados"
+      }
+    },
+    "rus_std": {
+      "name": "Random UnderSampler",
+      "purpose": "Reduzir amostras aleatoriamente.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025
+      }
+    },
+    "ros_std": {
+      "name": "Random OverSampler",
+      "purpose": "Ampliar amostras de forma aleatória.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "shrinkage": "None"
+      }
+    },
+    "ros_sk05": {
+      "name": "Random OverSampler (Shrinkage 0.5)",
+      "purpose": "Ampliação controlada com fator shrinkage.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "shrinkage": 0.5
+      }
+    },
+    "ros_sk1": {
+      "name": "Random OverSampler (Shrinkage 1)",
+      "purpose": "Similar ao ros_std com shrinkage igual a 1.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "shrinkage": 1
+      }
+    },
+    "ros_sk10": {
+      "name": "Random OverSampler (Shrinkage 10)",
+      "purpose": "Similar ao ros_std com shrinkage alto.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "shrinkage": 10
+      }
+    },
+    "smt1": {
+      "name": "SMOTE (k=1)",
+      "purpose": "Gerar amostras sintéticas usando k-vizinhos.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "k_neighbors": 1
+      }
+    },
+    "smt3": {
+      "name": "SMOTE (k=3)",
+      "purpose": "Versão do SMOTE para k-vizinhos igual a 3.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "k_neighbors": 3
+      }
+    },
+    "smt5": {
+      "name": "SMOTE (k=5)",
+      "purpose": "Versão mais comum do SMOTE com k=5.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "k_neighbors": 5
+      }
+    },
+    "ada1": {
+      "name": "ADASYN (k=1)",
+      "purpose": "Geração de amostras sintéticas com adaptatividade.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "n_neighbors": 1
+      }
+    },
+    "ada3": {
+      "name": "ADASYN (k=3)",
+      "purpose": "Versão do ADASYN com k igual a 3.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "n_neighbors": 3
+      }
+    },
+    "ada5": {
+      "name": "ADASYN (k=5)",
+      "purpose": "Versão popular do ADASYN com k=5.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "n_neighbors": 5
+      }
+    },
+    "bsmt1": {
+      "name": "Borderline SMOTE (versão 1)",
+      "purpose": "Ampliar amostras em cenários de fronteira.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "k_neighbors": 5,
+        "m_neighbors": 10,
+        "kind": "borderline-1"
+      }
+    },
+    "bsmt2": {
+      "name": "Borderline SMOTE (versão 2)",
+      "purpose": "Ampliar amostras de fronteira com técnica alternativa.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "k_neighbors": 5,
+        "m_neighbors": 10,
+        "kind": "borderline-2"
+      }
+    },
+    "svm_smt": {
+      "name": "SVM-SMOTE",
+      "purpose": "Geração de amostras usando SVM como estimador.",
+      "parameters": {
+        "sampling_strategy": "auto",
+        "random_state": 2025,
+        "k_neighbors": 5,
+        "m_neighbors": 10,
+        "svm_estimator": "SVC com kernel linear"
+      }
+    },
+    "kms": {
+        "name": "KMeans SMOTE",
+        "purpose": "Geração de amostras baseado em clusters.",
+        "parameters": {
+          "sampling_strategy": "auto",
+          "random_state": 2025,
+          "k_neighbors": 2,
+          "kmeans_estimator": "KMeans com 3 clusters (random_state=2025)",
+          "cluster_balance_threshold": 0.1,
+          "density_exponent": "auto"
+        }
+      }
+}
