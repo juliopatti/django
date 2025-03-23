@@ -5,3 +5,5 @@ how_env.txt
 teste.ipynb
 teste.py
 
+__pycache__/
+
