@@ -8,6 +8,8 @@ from django.core.files.storage import FileSystemStorage
 from pathlib import Path
 import pandas as pd
 from django.http import FileResponse
+import shutil
+import csv
 
 
 # Adiciona o diretório raiz ao caminho de pesquisa do Python
@@ -436,9 +438,19 @@ def avaliacao_1_amostra(request):
     return render(request, 'avaliacao_1_amostra.html')
 
 
+import shutil
+
 def executar_modelo_amostra(request, sampling_type):
     BASE_DIR = Path(__file__).resolve().parent.parent
+    media_dir = os.path.join(BASE_DIR, 'media')
     model_path = os.path.join(BASE_DIR, 'ml_models', f'predict_model_{sampling_type}.pkl')
+
+    # Verificar se o diretório 'media' existe e, se existir, deletar seu conteúdo
+    if os.path.exists(media_dir):
+        shutil.rmtree(media_dir)  # Remove todo o conteúdo da pasta 'media'
+
+    # Criar o diretório 'media' novamente
+    os.makedirs(media_dir)
 
     if not os.path.exists(model_path):
         return HttpResponse(f"Erro: Modelo não encontrado no caminho {model_path}")
@@ -483,13 +495,13 @@ def executar_modelo_amostra(request, sampling_type):
         print(f"Resultado gerado:\n{df_result}")  # Debug no terminal
 
         # Salvar o resultado em CSV
-        result_path = os.path.join(BASE_DIR, 'media', 'resultado_amostra.csv')
+        result_path = os.path.join(media_dir, 'resultado_amostra.csv')
         df_result.to_csv(result_path, index=False)
 
         # Salvar o caminho do CSV na sessão
         request.session['resultado_amostra_path'] = result_path
 
-        # Renderizar o template de resultados exclusivo para amostra
+        # Renderizar o template de resultados
         return render(request, 'resultado_1_amostra.html', {
             'preview': df_result.to_html(index=False)  # Exibir o resultado como preview
         })
@@ -505,3 +517,21 @@ def baixar_resultado_amostra(request):
     return FileResponse(open(result_path, 'rb'), as_attachment=True, filename='resultado_amostra.csv')
 
 
+def download_wines(request):
+    # Cria uma resposta HTTP com o cabeçalho do tipo de conteúdo CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="wines.csv"'
+
+    # Obtém os campos dinamicamente
+    fields = [field.name for field in Wines._meta.get_fields()]
+
+    # Cria um writer para o arquivo CSV
+    writer = csv.writer(response)
+    # Escreve o cabeçalho automaticamente
+    writer.writerow(fields)
+
+    # Escreve os valores para cada instância
+    for wine in Wines.objects.all():
+        writer.writerow([getattr(wine, field) for field in fields])
+
+    return response

@@ -55,5 +55,6 @@ urlpatterns = [
 
     # Download do CSV
     path('baixar_resultado_amostra/', views.baixar_resultado_amostra, name='baixar_resultado_amostra'),
-    path('download_csv/', views.download_csv, name='download_csv'),  # Nova rota adicionada
+    path('download_csv/', views.download_csv, name='download_csv'),  
+    path('download-wines/', views.download_wines, name='download_wines'),
 ]

@@ -1,0 +1,15 @@
+AUC Cross Val
+Média da validação cruzada (std): 87.2% (2.9%)
+(Min/Máx): (82.9%/89.8%)
+
+Resultados de Teste
+AUC Test: 87.6%
+
+              precision    recall  f1-score   support
+
+           0       0.98      0.74      0.84       236
+           1       0.34      0.89      0.50        36
+
+    accuracy                           0.76       272
+   macro avg       0.66      0.82      0.67       272
+weighted avg       0.89      0.76      0.80       272

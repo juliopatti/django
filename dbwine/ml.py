@@ -46,6 +46,7 @@ skf = StratifiedKFold(n_splits=4, shuffle=True, random_state=2025)
 
 wines = Wines.objects.all() 
 df_train = pd.DataFrame(list(wines.values()))
+df_train['bin_quality'] = df_train['bin_quality'].astype(int)
 # Identificar e converter as colunas problemáticas
 numeric_columns = [
     'fixed_acidity', 'volatile_acidity', 'citric_acid', 'residual_sugar',
@@ -223,7 +224,7 @@ def sampling(df, sampling_type, feature_columns, label_column):
     if sampling_type=='padrao':
         return df[feature_columns], df[label_column]
     
-    x_res, y_res = sampler.fit_resample(df[feature_columns], df[label_column])
+    x_res, y_res = sampler.fit_resample(df[feature_columns], df[label_column].astype(int))
     return x_res, y_res
 
 
