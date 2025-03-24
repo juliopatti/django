@@ -1,4 +1,5 @@
 # Projeto Django: Predição de Qualidade do Vinho
+- Video de apresentação: https://www.youtube.com/watch?v=4jIoxTsxqSQ
 
 Este projeto utiliza **machine learning** para modelar preferências de vinhos com base em propriedades físico-químicas, seguindo a pesquisa de Cortez et al., 2009. A aplicação foi desenvolvida com Django e permite treinamento, avaliação e predição de modelos de classificação.
 
