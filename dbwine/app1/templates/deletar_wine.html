@@ -13,7 +13,7 @@
             background-position: center;
             margin: 0;
             font-family: Arial, sans-serif;
-            color: #333;
+            color: #000; /* Texto padrão preto */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -26,9 +26,10 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             text-align: center;
             width: 400px;
+            color: #000; /* Texto na container também preto */
         }
         .container h1 {
-            color: #555;
+            color: #000; /* Texto do título em preto */
         }
         .container form {
             margin-top: 20px;
@@ -52,8 +53,8 @@
         }
         .wine-info {
             text-align: left;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
+            background-color: rgba(0, 0, 0, 0.1); /* Fundo mais claro para contraste */
+            color: #000; /* Texto preto */
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 20px;
@@ -61,7 +62,7 @@
         }
         .wine-info p span {
             font-weight: bold;
-            color: #ffcc00;
+            color: #000; /* Destaque em preto */
         }
         .error {
             color: red;
@@ -83,7 +84,7 @@
         <form method="POST">
             {% csrf_token %}
             <input type="text" name="search_query" placeholder="Digite o ID ou Nome do Vinho" required>
-            <button type="submit">Buscar Vinho</button>
+            <button type="submit">Deletar Vinho</button>
         </form>
         {% else %}
         <!-- Confirmação de exclusão -->
@@ -108,3 +109,24 @@
     </div>
 </body>
 </html>
+
+<!-- Botão fixo no canto superior direito -->
+<style>
+    .fixed-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .fixed-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<a href="{% url 'home' %}" class="fixed-button">Voltar para o Início</a>

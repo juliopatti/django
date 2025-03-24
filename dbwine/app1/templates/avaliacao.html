@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação</title>
+    <style>
+        body {
+            background-image: url("{% static 'back_ground.png' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.4); /* Maior transparência */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #000; /* Alterado para preto */
+            margin-bottom: 20px;
+        }
+        .button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Escolha uma Opção para Predição</h1>
+        <!-- Botões de Navegação -->
+        <a href="{% url 'avaliacao_1_amostra' %}" class="button">1 Amostra</a>
+        <a href="{% url 'upload_csv' %}" class="button">Várias Amostras</a>
+    </div>
+</body>
+</html>
+
+<!-- Botão fixo no canto superior direito -->
+<style>
+    .fixed-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .fixed-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<a href="{% url 'home' %}" class="fixed-button">Voltar para o Início</a>

@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload e Seleção de Modelo</title>
+    <style>
+        body {
+            background-image: url("{% static 'back_ground.png' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: #000; /* Torna o texto padrão preto */
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        h1, h2 {
+            color: #000; /* Títulos em preto */
+            margin-bottom: 20px;
+        }
+        button, a.button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        button:hover, a.button:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            color: #000; /* Texto da lista em preto */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if csv_carregado %}
+            <!-- Mensagem de sucesso e lista de modelos -->
+            <h1>CSV carregado com sucesso!</h1>
+            <h2>Escolha um Modelo Treinado</h2>
+            <ul>
+                {% for modelo in modelos_treinados %}
+                <li>
+                    <a href="{% url 'executar_modelo' modelo.sampling_type %}" class="button">
+                        Processar com {{ modelo.nome }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <!-- Formulário de upload -->
+            <h1>Carregar Arquivo CSV</h1>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'upload_csv' %}">
+                {% csrf_token %}
+                <input type="file" name="csv_file" accept=".csv" required><br>
+                <button type="submit">Carregar CSV</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>
+
+<!-- Botão fixo no canto superior direito -->
+<style>
+    .fixed-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .fixed-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<a href="{% url 'home' %}" class="fixed-button">Voltar para o Início</a>

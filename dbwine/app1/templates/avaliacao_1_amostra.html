@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Wine</title>
+    <title>1 Amostra</title>
     <style>
         body {
             background-image: url("{% static 'back_ground.png' %}");
@@ -71,7 +71,7 @@
 </head>
 <body>
     <div class="form-container">
-        <h1>Criar Wine</h1>
+        <h1>1 Amostra</h1>
 
         <!-- Exibição da Mensagem de Erro -->
         {% if error %}
@@ -83,7 +83,7 @@
             <!-- Primeira Coluna -->
             <div class="form-field">
                 <label for="name">Nome:</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" placeholder="Não informado">
             </div>
             <div class="form-field">
                 <label for="fixed_acidity">Acidez Fixa:</label>
@@ -133,48 +133,18 @@
             </div>
             <div class="form-field">
                 <label for="quality">Qualidade:</label>
-                <input type="number" step="1" id="quality" name="quality" required>
+                <input type="number" step="1" id="quality" name="quality" placeholder="Não informado">
             </div>
             <div class="form-field">
                 <label for="bin_quality">Qualidade Binária:</label>
                 <select id="bin_quality" name="bin_quality">
+                    <option value="">Selecione</option>
                     <option value="1">Bom</option>
                     <option value="0">Ruim</option>
                 </select>
             </div>
-
-            <!-- Campo Treinamento -->
-            <div class="form-field" style="flex: 1 1 100%; margin-top: 20px;">
-                <label for="train_set">Treinamento:</label>
-                <select id="train_set" name="train_set">
-                    <option value="True">Sim</option>
-                    <option value="False">Não</option>
-                </select>
-            </div>
-            <button type="submit">Criar Wine</button>
+            <button type="submit">Enviar Amostra</button>
         </form>
     </div>
 </body>
 </html>
-
-<!-- Botão fixo no canto superior direito -->
-<style>
-    .fixed-button {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: #007BFF;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 14px;
-        text-decoration: none;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-    }
-    .fixed-button:hover {
-        background-color: #0056b3;
-    }
-</style>
-<a href="{% url 'home' %}" class="fixed-button">Voltar para o Início</a>
-

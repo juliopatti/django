@@ -30,7 +30,7 @@
         }
         h1 {
             text-align: center;
-            color: #555;
+            color: #000; /* Título "Buscar Wines" agora em preto */
         }
         .search-box {
             text-align: center;
@@ -73,7 +73,7 @@
         .no-result {
             text-align: center;
             font-size: 18px;
-            color: #666;
+            color: #000; /* Aviso agora em preto */
         }
     </style>
 </head>
@@ -119,3 +119,24 @@
     </div>
 </body>
 </html>
+
+<!-- Botão fixo no canto superior direito -->
+<style>
+    .fixed-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .fixed-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<a href="{% url 'home' %}" class="fixed-button">Voltar para o Início</a>

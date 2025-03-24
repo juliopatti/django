@@ -3,6 +3,19 @@ from django.http import HttpResponse
 from .models import Wines
 import os
 import json
+import sys
+from django.core.files.storage import FileSystemStorage
+from pathlib import Path
+import pandas as pd
+from django.http import FileResponse
+
+
+# Adiciona o diretório raiz ao caminho de pesquisa do Python
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../..")
+
+# Agora importe a função corretamente
+from ml import train_eval_model, eval
+from django.views.decorators.csrf import csrf_exempt
 
 
 # def index(request):
@@ -129,9 +142,21 @@ def deletar_wine(request):
     return render(request, 'deletar_wine.html', {'wine': wine})
 
 
-def treinar_modelo(request, tipo):
-    # Substitua pelo código para tratar o treinamento baseado no tipo escolhido
-    return render(request, 'treinar_modelo.html', {'tipo': tipo})
+
+
+@csrf_exempt
+def treinar_modelo(request):
+    if request.method == 'POST':
+        # Obter o tipo de amostragem do formulário
+        sampling_type = request.POST.get('sampling_type')
+
+        if sampling_type:
+            # Chamar a função para treinar o modelo
+            train_eval_model(sampling_type)
+            return HttpResponse(f"Modelo treinado com sucesso para o tipo: {sampling_type}")
+
+    # Se for GET ou não houver dados POST
+    return render(request, 'treinar_modelo.html')
 
 def informacoes_modelos(request):
     return render(request, 'informacoes_modelos.html')
@@ -145,13 +170,338 @@ def escolher_modelo(request):
         sampling_types = json.load(file)
 
     # Ordena os modelos: "padrao" em primeiro lugar, seguido dos demais em ordem alfabética
-    modelos = [{"tipo": "padrao", "nome": sampling_types["padrao"]["name"]}]
+    modelos = [{"tipo": "padrao", "nome": sampling_types["padrao"]["name"], "sampling_type": "padrao"}]
     modelos += sorted(
-        [{"tipo": key, "nome": value["name"], "info": value} for key, value in sampling_types.items() if key != "padrao"],
+        [
+            {
+                "tipo": key,
+                "nome": value["name"],
+                "info": value,
+                "sampling_type": key  # Adiciona a chave 'sampling_type'
+            }
+            for key, value in sampling_types.items() if key != "padrao"
+        ],
         key=lambda x: x["nome"]
     )
 
     # Renderiza o template, passando todos os modelos e informações
     return render(request, 'escolher_modelo.html', {'modelos': modelos, 'sampling_data': sampling_types})
+
+@csrf_exempt
+def treinar_modelo(request):
+    if request.method == 'POST':
+        # Obter o tipo de amostragem do formulário
+        sampling_type = request.POST.get('sampling_type')
+
+        if sampling_type:
+            # Chamar a função para treinar o modelo
+            train_eval_model(sampling_type)
+            
+            # Renderizar o template com sucesso
+            return render(request, 'modelo_treinado.html', {'sampling_type': sampling_type})
+
+    # Se for GET ou não houver dados POST, redirecionar para outro lugar
+    return render(request, 'treinar_modelo.html')
+
+
+def listar_modelos_treinados(request):
+    # Caminho da pasta ml_models
+    ml_models_path = os.path.join(os.path.dirname(__file__), '..', 'ml_models')
+
+    # Lista de modelos treinados
+    modelos_treinados = []
+    if os.path.exists(ml_models_path):
+        for file_name in os.listdir(ml_models_path):
+            if file_name.endswith('.txt'):
+                # Extrai o sampling_type do nome do arquivo
+                sampling_type = '_'.join(file_name.split('_')[2:]).split('.')[0]
+                modelos_treinados.append({
+                    "nome": file_name,
+                    "sampling_type": sampling_type,
+                })
+
+    return render(request, 'informacoes_modelos.html', {'modelos_treinados': modelos_treinados})
+
+
+def exibir_informacoes_modelo(request, sampling_type):
+    json_path = os.path.join(os.path.dirname(__file__), 'sampling_types.json')
+
+    # Carrega os dados do arquivo JSON
+    with open(json_path, 'r', encoding='utf-8') as file:
+        sampling_types = json.load(file)
+    info_model = ''
+    for k, v in sampling_types[sampling_type].items():
+        info_model += f'{k}: {v}\n'
+    
+    # Configurar o caminho absoluto para a pasta ml_models
+    base_dir = os.path.dirname(os.path.dirname(__file__))  # Caminho raiz do projeto
+    ml_models_path = os.path.join(base_dir, 'ml_models')  # Caminho para ml_models
+    file_name = f'predict_model_{sampling_type}.txt'  # Gera o nome do arquivo
+    file_path = os.path.join(ml_models_path, file_name)  # Caminho completo do arquivo
+
+    # Verifica se o arquivo existe
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            conteudo = file.read()  # Lê o conteúdo do arquivo
+        conteudo += '\n\n'+ str(info_model)
+        return render(request, 'informacoes_modelo.html', {
+            'conteudo': conteudo,
+            'sampling_type': sampling_type
+        })
+    else:
+        return render(request, 'informacoes_modelo.html', {
+            'conteudo': f"Arquivo não encontrado: {file_name}",
+            'sampling_type': sampling_type
+        })
+
+def avaliacao(request):
+    # Renderiza a tela principal de avaliação com os dois botões
+    return render(request, 'avaliacao.html')
+
+def avaliacao_1_amostra(request):
+    # Lógica para avaliar uma única amostra
+    return HttpResponse("Página de Avaliação - 1 Amostra")
+
+def avaliacao_varias_amostras(request):
+    # Lógica para avaliar várias amostras a partir de um CSV
+    return HttpResponse("Página de Avaliação - Várias Amostras (CSV)")
+
+
+
+def avaliacao(request):
+    # Renderiza a tela principal de avaliação com os dois botões
+    return render(request, 'avaliacao.html')
+
+def avaliacao_1_amostra(request):
+    # Lógica para avaliar uma única amostra
+    return HttpResponse("Página de Avaliação - 1 Amostra")
+
+def avaliacao_varias_amostras(request):
+    # Lógica para avaliar várias amostras a partir de um CSV
+    return HttpResponse("Página de Avaliação - Várias Amostras (CSV)")
+
+def upload_csv(request):
+    if request.method == 'POST':
+        try:
+            # Obtendo o arquivo enviado
+            csv_file = request.FILES['csv_file']
+
+            # Salvando no diretório 'media'
+            BASE_DIR = Path(__file__).resolve().parent.parent
+            media_path = os.path.join(BASE_DIR, 'media')
+
+            # Esvaziando a pasta 'media' antes do upload
+            if os.path.exists(media_path):
+                for file_name in os.listdir(media_path):
+                    file_path = os.path.join(media_path, file_name)
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)  # Remove o arquivo
+                    elif os.path.isdir(file_path):
+                        os.rmdir(file_path)  # Remove subpastas vazias, se necessário
+
+            # Cria a pasta 'media' caso ela não exista
+            if not os.path.exists(media_path):
+                os.makedirs(media_path)
+
+            # Salvando o novo arquivo CSV na pasta 'media'
+            file_path = os.path.join(media_path, csv_file.name)
+            with open(file_path, 'wb+') as destination:
+                for chunk in csv_file.chunks():
+                    destination.write(chunk)
+
+            # Salvando o caminho na sessão
+            request.session['csv_path'] = file_path
+            print(f"CSV salvo em: {file_path}")
+
+            # Listar modelos
+            models_path = os.path.join(BASE_DIR, 'ml_models')
+            modelos_treinados = []
+            for file_name in os.listdir(models_path):
+                if file_name.startswith("predict_model_") and file_name.endswith(".pkl"):
+                    sampling_type = file_name.replace("predict_model_", "").replace(".pkl", "")
+                    modelos_treinados.append({'nome': sampling_type, 'sampling_type': sampling_type})
+
+            # Marcar CSV como carregado e renderizar com a lista de modelos
+            return render(request, 'upload.html', {
+                'modelos_treinados': modelos_treinados,
+                'csv_carregado': True  # Adiciona a flag ao contexto
+            })
+        except Exception as e:
+            print(f"Erro ao carregar CSV: {e}")
+            return HttpResponse(f"Erro ao carregar o CSV: {e}")
+
+    # Renderiza a página inicial se for GET
+    return render(request, 'upload.html', {'csv_carregado': False})
+
+
+def executar_modelo(request, sampling_type):
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    model_path = os.path.join(BASE_DIR, 'ml_models', f'predict_model_{sampling_type}.pkl')
+
+    if not os.path.exists(model_path):
+        return HttpResponse(f"Erro: Modelo não encontrado no caminho {model_path}")
+
+    try:
+        # Recuperar o arquivo CSV carregado previamente
+        csv_path = request.session.get('csv_path', None)
+        if not csv_path or not os.path.exists(csv_path):
+            return HttpResponse("Erro: Nenhum arquivo CSV foi carregado previamente.")
+
+        # Processar o arquivo CSV
+        df = pd.read_csv(csv_path)
+        df_result = eval(df, sampling_type)  # Função de predição
+        print(f"Resultados gerados:\n{df_result.head()}")  # Debug no terminal
+
+        # Salvar o resultado em CSV
+        result_path = os.path.join(BASE_DIR, 'media', 'resultado.csv')
+        df_result.to_csv(result_path, index=False)
+        request.session['resultado_path'] = result_path  # Salva o caminho do arquivo na sessão
+
+        # Renderizar a página com botão de download
+        return render(request, 'resultado.html', {
+            'preview': df_result.head().to_html(index=False)  # Mostra apenas o preview na tela
+        })
+
+    except Exception as e:
+        return HttpResponse(f"Erro ao processar o modelo: {e}")
+    
+
+def download_csv(request):
+    # Recuperar o caminho do arquivo salvo na sessão
+    resultado_path = request.session.get('resultado_path', None)
+    if not resultado_path or not os.path.exists(resultado_path):
+        return HttpResponse("Erro: Nenhum resultado disponível para download.")
+
+    # Enviar o arquivo como resposta para download
+    with open(resultado_path, 'rb') as file:
+        response = HttpResponse(file.read(), content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="resultado.csv"'
+        return response
+    
+
+def avaliacao_1_amostra(request):
+    if request.method == 'POST':
+        # Captura os dados enviados via POST (dados da amostra)
+        name = request.POST.get('name')
+        fixed_acidity = request.POST.get('fixed_acidity')
+        volatile_acidity = request.POST.get('volatile_acidity')
+        citric_acid = request.POST.get('citric_acid')
+        residual_sugar = request.POST.get('residual_sugar')
+        chlorides = request.POST.get('chlorides')
+        free_sulfur_dioxide = request.POST.get('free_sulfur_dioxide')
+        total_sulfur_dioxide = request.POST.get('total_sulfur_dioxide')
+        density = request.POST.get('density')
+        pH = request.POST.get('pH')
+        sulphates = request.POST.get('sulphates')
+        alcohol = request.POST.get('alcohol')
+        quality = request.POST.get('quality')
+        bin_quality = request.POST.get('bin_quality')
+
+        # Caminho da pasta `ml_models`
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        ml_models_path = os.path.join(BASE_DIR, 'ml_models')
+
+        # Carregar os modelos treinados dinamicamente a partir dos arquivos na pasta
+        modelos_treinados = []
+        try:
+            for file_name in os.listdir(ml_models_path):
+                if file_name.startswith("predict_model_") and file_name.endswith(".pkl"):
+                    sampling_type = file_name.replace("predict_model_", "").replace(".pkl", "")
+                    modelos_treinados.append({'nome': sampling_type, 'sampling_type': sampling_type})
+        except Exception as e:
+            return HttpResponse(f"Erro ao carregar modelos: {e}")
+
+        # Redireciona para o template individual de seleção de modelos
+        return render(request, 'selecionar_modelo_1_amostra.html', {
+            'modelos_treinados': modelos_treinados,
+            'amostra': {
+                'name': name,
+                'quality': quality,
+                'bin_quality': bin_quality,
+                'fixed_acidity': fixed_acidity,
+                'volatile_acidity': volatile_acidity,
+                'citric_acid': citric_acid,
+                'residual_sugar': residual_sugar,
+                'chlorides': chlorides,
+                'free_sulfur_dioxide': free_sulfur_dioxide,
+                'total_sulfur_dioxide': total_sulfur_dioxide,
+                'density': density,
+                'pH': pH,
+                'sulphates': sulphates,
+                'alcohol': alcohol,
+            },
+        })
+
+    # Caso seja GET, exibe o formulário para 1 Amostra
+    return render(request, 'avaliacao_1_amostra.html')
+
+
+def executar_modelo_amostra(request, sampling_type):
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    model_path = os.path.join(BASE_DIR, 'ml_models', f'predict_model_{sampling_type}.pkl')
+
+    if not os.path.exists(model_path):
+        return HttpResponse(f"Erro: Modelo não encontrado no caminho {model_path}")
+
+    try:
+        # Recuperar os dados da amostra enviados via POST
+        amostra = {
+            'name': request.POST.get('name'),
+            'fixed_acidity': request.POST.get('fixed_acidity'),
+            'volatile_acidity': request.POST.get('volatile_acidity'),
+            'citric_acid': request.POST.get('citric_acid'),
+            'residual_sugar': request.POST.get('residual_sugar'),
+            'chlorides': request.POST.get('chlorides'),
+            'free_sulfur_dioxide': request.POST.get('free_sulfur_dioxide'),
+            'total_sulfur_dioxide': request.POST.get('total_sulfur_dioxide'),
+            'density': request.POST.get('density'),
+            'pH': request.POST.get('pH'),
+            'sulphates': request.POST.get('sulphates'),
+            'alcohol': request.POST.get('alcohol'),
+            'quality': request.POST.get('quality'),  # Opcional
+            'bin_quality': request.POST.get('bin_quality')  # Opcional
+        }
+
+        # Verificar se algum campo obrigatório está vazio
+        required_fields = ['fixed_acidity', 'volatile_acidity', 'citric_acid', 'residual_sugar',
+                           'chlorides', 'free_sulfur_dioxide', 'total_sulfur_dioxide', 'density',
+                           'pH', 'sulphates', 'alcohol']
+        for field in required_fields:
+            if amostra[field] is None:
+                return HttpResponse(f"Erro: O campo {field} é obrigatório.")
+
+        # Converter os valores para um DataFrame para o modelo
+        import pandas as pd
+        df_amostra = pd.DataFrame([amostra])
+
+        # Certifique-se de que os campos opcionais (quality e bin_quality) sejam preenchidos com None
+        df_amostra['quality'] = df_amostra['quality'].fillna('None')
+        df_amostra['bin_quality'] = df_amostra['bin_quality'].fillna('None')
+
+        # Processar a amostra com o modelo
+        df_result = eval(df_amostra, sampling_type)  # Função `eval` para predição
+        print(f"Resultado gerado:\n{df_result}")  # Debug no terminal
+
+        # Salvar o resultado em CSV
+        result_path = os.path.join(BASE_DIR, 'media', 'resultado_amostra.csv')
+        df_result.to_csv(result_path, index=False)
+
+        # Salvar o caminho do CSV na sessão
+        request.session['resultado_amostra_path'] = result_path
+
+        # Renderizar o template de resultados exclusivo para amostra
+        return render(request, 'resultado_1_amostra.html', {
+            'preview': df_result.to_html(index=False)  # Exibir o resultado como preview
+        })
+
+    except Exception as e:
+        return HttpResponse(f"Erro ao processar o modelo: {e}")
+
+    
+def baixar_resultado_amostra(request):
+    result_path = request.session.get('resultado_amostra_path')
+    if not result_path or not os.path.exists(result_path):
+        return HttpResponse("Erro: Nenhum resultado de amostra foi encontrado.")
+    return FileResponse(open(result_path, 'rb'), as_attachment=True, filename='resultado_amostra.csv')
 
 

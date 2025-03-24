@@ -7,6 +7,25 @@
 </head>
 <body>
     <h1>Treinando o Modelo</h1>
-    <p>Tipo de modelo selecionado: {{ tipo }}</p>
+    <form method="POST" action="{% url 'treinar_modelo' %}">
+        {% csrf_token %}
+        <label for="sampling_type">Tipo de amostragem selecionado:</label>
+        <!-- Campo oculto para passar a variável -->
+        <input type="hidden" id="sampling_type" name="sampling_type">
+        <button type="submit">Treinar Modelo</button>
+    </form>
+
+    <script>
+        // Função para definir o valor de 'sampling_type' no campo oculto
+        function setSamplingType(samplingType) {
+            const inputField = document.getElementById('sampling_type');
+            inputField.value = samplingType; // Define o valor capturado
+        }
+
+        // Exemplo de chamada ao clicar em "Treinar"
+        document.querySelector('button[type="submit"]').onclick = function () {
+            setSamplingType(window.currentSamplingType); // Usa a variável global setada no modal
+        };
+    </script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template com Fundo</title>
+    <title>Informações dos Modelos Treinados</title>
     <style>
         body {
             background-image: url("{% static 'back_ground.png' %}");
@@ -30,21 +30,19 @@
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .admin-box {
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        ul {
+            list-style-type: none;
+            padding: 0;
         }
-        .admin-box a, .box a {
+        li {
+            margin: 10px 0;
+        }
+        a {
             color: #007BFF;
             text-decoration: none;
             font-weight: bold;
         }
-        .admin-box a:hover, .box a:hover {
+        a:hover {
             text-decoration: underline;
         }
     </style>
@@ -52,21 +50,39 @@
 <body>
     <div class="container">
         <div class="box">
-            <h2><a href="{% url 'avaliacao' %}" style="text-decoration: none; color: inherit;">Produção</a></h2>
+            <h2>Modelos Treinados</h2>
+            <ul>
+                {% for modelo in modelos_treinados %}
+                <li>
+                    <a href="{% url 'informacoes_modelo' modelo.sampling_type %}">{{ modelo.nome }}</a>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
         <div class="box">
-            <h2>Modelos de Classificação</h2>
-            <a href="{% url 'escolher_modelo' %}">Treinar um Novo Modelo</a><br>
-            <a href="{% url 'informacoes_modelos' %}">Informações dos Modelos Treinados</a>
-        </div>
-        <div class="admin-box">
-            <h2>Espaço do Admin</h2>
-            <!-- Links para operações CRUD -->
-            <a href="{% url 'criar_wine' %}">Criar Wine</a><br>
-            <a href="{% url 'buscar_wines' %}">Buscar Wines</a><br>
-            <a href="{% url 'atualizar_wine' %}">Atualizar Wine</a><br>
-            <a href="{% url 'deletar_wine' %}">Deletar Wine</a>
+            <a href="{% url 'home' %}">Voltar para o Início</a>
         </div>
     </div>
 </body>
 </html>
+
+<!-- Botão fixo no canto superior direito -->
+<style>
+    .fixed-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .fixed-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<a href="{% url 'home' %}" class="fixed-button">Voltar para o Início</a>

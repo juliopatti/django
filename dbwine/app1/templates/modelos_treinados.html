@@ -29,6 +29,7 @@
             width: 300px;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Para indicar que é clicável */
         }
         .admin-box {
             background-color: rgba(0, 0, 0, 0.8);
@@ -51,13 +52,13 @@
 </head>
 <body>
     <div class="container">
+        <a href="{% url 'informacoes_modelos' %}" style="text-decoration: none;">
+            <div class="box">
+                <h2>Modelos Treinados</h2>
+            </div>
+        </a>
         <div class="box">
-            <h2><a href="{% url 'avaliacao' %}" style="text-decoration: none; color: inherit;">Produção</a></h2>
-        </div>
-        <div class="box">
-            <h2>Modelos de Classificação</h2>
-            <a href="{% url 'escolher_modelo' %}">Treinar um Novo Modelo</a><br>
-            <a href="{% url 'informacoes_modelos' %}">Informações dos Modelos Treinados</a>
+            <h2>Adicionar Avaliação</h2>
         </div>
         <div class="admin-box">
             <h2>Espaço do Admin</h2>

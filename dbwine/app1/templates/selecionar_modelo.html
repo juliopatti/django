@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecionar Modelo Treinado</title>
+    <style>
+        body {
+            background-image: url("{% static 'back_ground.png' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        form {
+            margin: 10px 0;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Escolha um Modelo Treinado e Envie um CSV</h1>
+        <ul>
+            {% for modelo in modelos_treinados %}
+            <li>
+                <form method="POST" enctype="multipart/form-data" action="{% url 'executar_modelo' modelo.sampling_type %}">
+                    {% csrf_token %}
+                    <label for="csv_file">Carregar CSV para {{ modelo.nome }}</label><br>
+                    <input type="file" name="csv_file" accept=".csv" required><br>
+                    <button type="submit">Enviar</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'home' %}" class="back-button">Voltar para o Início</a>
+    </div>
+</body>
+</html>

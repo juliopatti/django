@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecionar Modelo para 1 Amostra</title>
+    <style>
+        body {
+            background-image: url("{% static 'back_ground.png' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Escolha um Modelo para Processar a Amostra</h1>
+
+        <!-- Exibição dos modelos treinados -->
+        <ul>
+            {% for modelo in modelos_treinados %}
+            <li>
+                <form method="POST" action="{% url 'executar_modelo_amostra' modelo.sampling_type %}">
+                    {% csrf_token %}
+                    <!-- Adicione os campos da amostra ao formulário -->
+                    {% for key, value in amostra.items %}
+                    <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endfor %}
+                    <button type="submit">Processar com {{ modelo.nome }}</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <a href="{% url 'avaliacao_1_amostra' %}" class="back-button">Voltar para a Amostra</a>
+    </div>
+</body>
+</html>

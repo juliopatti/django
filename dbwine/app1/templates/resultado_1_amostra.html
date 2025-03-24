@@ -1,0 +1,96 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado - 1 Amostra</title>
+    <style>
+        body {
+            background-image: url("{% static 'result.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #000; /* Texto padrão preto */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0;
+            padding: 20px;
+            text-align: left; /* Garante alinhamento à esquerda */
+            font-family: Arial, sans-serif;
+            color: #000; /* Texto da container em preto */
+        }
+        .preview-table {
+            margin: 20px 0;
+            border-collapse: collapse;
+            width: 100%;
+            color: #000; /* Texto da tabela em preto */
+        }
+        .preview-table th, .preview-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            color: #000; /* Garantir texto da célula em preto */
+        }
+        .preview-table th {
+            background-color: #f2f2f2;
+            color: #000; /* Cabeçalho da tabela também em preto */
+        }
+        button, a.button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        button:hover, a.button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Alinhamento do texto à esquerda -->
+        <h1>Resultado da Avaliação - 1 Amostra</h1>
+
+        <!-- Mostra um preview dos resultados dinâmicos -->
+        <div class="preview">
+            <h2>Preview dos Resultados</h2>
+            <table class="preview-table">
+                {{ preview|safe }}
+            </table>
+        </div>
+
+        <!-- Botão para download do CSV -->
+        <a href="{% url 'baixar_resultado_amostra' %}" class="button">Baixar Resultados da Amostra em CSV</a>
+    </div>
+</body>
+</html>
+
+<!-- Botão fixo no canto superior direito -->
+<style>
+    .fixed-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .fixed-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<a href="{% url 'home' %}" class="fixed-button">Voltar para o Início</a>

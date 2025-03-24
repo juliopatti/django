@@ -71,6 +71,33 @@
         .modal-content h2 {
             margin-top: 0;
         }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .loading-overlay .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #ffffff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         .close-modal {
             display: block;
             margin-top: 20px;
@@ -92,7 +119,8 @@
         <h1>Escolha um Modelo</h1>
         <div class="grid">
             {% for modelo in modelos %}
-            <div class="modelo" onclick="showModal('{{ modelo.tipo }}', '{{ modelo.nome }}')">
+            <!-- Adiciona sampling_type (associado ao tipo) ao modal -->
+            <div class="modelo" onclick="showModal('{{ modelo.sampling_type }}', '{{ modelo.nome }}')">
                 <span>{{ modelo.nome }}</span>
             </div>
             {% endfor %}
@@ -104,36 +132,65 @@
         <div class="modal-content">
             <h2 id="modal-title"></h2>
             <div id="modal-info"></div>
-            <button class="close-modal" onclick="startTraining()">Treinar</button>
+
+            <!-- Formulário para enviar o sampling_type -->
+            <form method="POST" action="{% url 'treinar_modelo' %}" onsubmit="showLoading()">
+                {% csrf_token %}
+                <!-- Campo oculto para armazenar o sampling_type -->
+                <input type="hidden" id="sampling_type" name="sampling_type">
+                <!-- Botão para enviar o formulário -->
+                <button type="submit" class="close-modal">Treinar</button>
+            </form>
+
             <button class="close-modal" onclick="closeModal()">Fechar</button>
         </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <h1>Treinando...</h1>
     </div>
 
     <script>
         const samplingData = {{ sampling_data|safe }}; // Dados JSON enviados pelo backend
 
         // Função para abrir o modal
-        function showModal(tipo, nome) {
+        function showModal(samplingType, nome) {
             const modal = document.getElementById('modal');
             const modalTitle = document.getElementById('modal-title');
             const modalInfo = document.getElementById('modal-info');
+            const inputField = document.getElementById('sampling_type'); // Campo oculto do formulário
 
             // Exibe o modal
             modal.style.display = 'flex';
             modalTitle.textContent = nome;
 
             // Recupera as informações do JSON e exibe
-            if (samplingData[tipo]) {
-                const info = samplingData[tipo];
+            if (samplingData[samplingType]) {
+                const info = samplingData[samplingType];
                 modalInfo.innerHTML = `
                     <p><strong>Nome:</strong> ${info.name || "N/A"}</p>
                     <p><strong>Descrição:</strong> ${info.purpose || "N/A"}</p>
                     <p><strong>Parâmetros:</strong></p>
                     <pre>${info.parameters ? JSON.stringify(info.parameters, null, 2) : "N/A"}</pre>
+                    <p><strong>Sampling Type:</strong> ${samplingType}</p>
                 `;
             } else {
                 modalInfo.innerHTML = `<p>Informações não disponíveis.</p>`;
             }
+
+            // Armazena o samplingType no campo oculto
+            inputField.value = samplingType;
+
+            // Armazena o samplingType globalmente para uso posterior (opcional)
+            window.currentSamplingType = samplingType;
+        }
+
+        // Função para mostrar o overlay de carregamento
+        function showLoading() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.style.display = 'flex';
         }
 
         // Função para fechar o modal
@@ -141,12 +198,29 @@
             const modal = document.getElementById('modal');
             modal.style.display = 'none';
         }
-
-        // Função para iniciar o treinamento
-        function startTraining() {
-            alert('Iniciando treinamento...');
-            closeModal();
-        }
     </script>
 </body>
 </html>
+
+
+<!-- Botão fixo no canto superior direito -->
+<style>
+    .fixed-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
+    .fixed-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<a href="{% url 'home' %}" class="fixed-button">Voltar para o Início</a>
+
